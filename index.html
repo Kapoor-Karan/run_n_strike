@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run 'n' Strike</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <ul class="navbar">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="game.html">Play Game</a></li>
+            <li><a href="leaderboard.html">Leaderboard</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Welcome to Run 'n' Strike!</h1>
+        <p>A fun and exciting game where you shoot enemies, collect coins, and level up as the difficulty increases.</p>
+        <button id="start-game" class="main-button">Start Game</button>
+        <button id="view-leaderboard" class="main-button">Leaderboard</button>
+        <button id="about-game" class="main-button">About</button>
+    </div>
+
+    <!-- JavaScript for button navigation -->
+    <script>
+        document.getElementById('start-game').addEventListener('click', () => {
+            window.location.href = 'game.html';
+        });
+        document.getElementById('view-leaderboard').addEventListener('click', () => {
+            window.location.href = 'leaderboard.html';
+        });
+        document.getElementById('about-game').addEventListener('click', () => {
+            window.location.href = 'about.html';
+        });
+    </script>
+</body>
+</html>
