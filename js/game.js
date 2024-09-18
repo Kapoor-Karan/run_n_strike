@@ -14,6 +14,7 @@ let player = {
 
 let enemies = [];
 let coins = [];
+let bullets = [];
 let lives = 3;
 let score = 0;
 let gameRunning = true;
@@ -33,6 +34,34 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+// Shooting mechanic
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') {
+        // Add a bullet when the spacebar is pressed
+        bullets.push({
+            x: player.x + player.width,  // Start at the right side of the player
+            y: player.y + player.height / 2 - 2,  // Centered vertically
+            width: 10,
+            height: 5,
+            speed: 8
+        });
+    }
+});
+
+// Draw bullets
+function drawBullets() {
+    bullets.forEach((bullet, index) => {
+        bullet.x += bullet.speed;  // Move bullet to the right
+        ctx.fillStyle = 'red';
+        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+
+        // Remove bullet if it goes off-screen
+        if (bullet.x > canvas.width) {
+            bullets.splice(index, 1);
+        }
+    });
+}
+
 // Main game loop
 function gameLoop() {
     if (!gameRunning) return;
@@ -42,6 +71,7 @@ function gameLoop() {
     
     // Draw player
     drawPlayer();
+    drawBullets();
     
     // Add logic to spawn enemies and coins, handle collisions, etc.
 
