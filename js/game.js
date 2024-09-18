@@ -8,7 +8,7 @@ let player = {
     y: canvas.height - 50,
     width: 50,
     height: 50,
-    speed: 5,
+    speed: 20,
     color: 'blue',
 };
 
@@ -23,6 +23,15 @@ function drawPlayer() {
     ctx.fillStyle = player.color;
     ctx.fillRect(player.x, player.y, player.width, player.height);
 }
+
+// Player movement (up and down)
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowUp' && player.y > 0) {
+        player.y -= player.speed;  // Move up
+    } else if (event.key === 'ArrowDown' && player.y + player.height < canvas.height) {
+        player.y += player.speed;  // Move down
+    }
+});
 
 // Main game loop
 function gameLoop() {
