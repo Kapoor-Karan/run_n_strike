@@ -88,6 +88,32 @@ function spawnEnemy() {
     });
 }
 
+// Draw coins
+function drawCoins() {
+    coins.forEach((coin, index) => {
+        ctx.fillStyle = 'gold';
+        ctx.fillRect(coin.x, coin.y, coin.width, coin.height);
+        coin.x -= coin.speed;  // Move coin leftward
+
+        // Remove coin if it goes off-screen
+        if (coin.x + coin.width < 0) {
+            coins.splice(index, 1);
+        }
+    });
+}
+
+// Spawning Coins
+function spawnCoin() {
+    coins.push({
+        x: canvas.width,
+        y: Math.random() * (canvas.height - 20),
+        width: 20,
+        height: 20,
+        speed: 2
+    });
+}
+
+
 // Main game loop
 function gameLoop() {
     if (!gameRunning) return;
@@ -99,8 +125,7 @@ function gameLoop() {
     drawPlayer();
     drawBullets();
     drawEnemies();
-    
-    // Add logic to spawn enemies and coins, handle collisions, etc.
+    drawCoins();
 
     // Continue the game loop
     requestAnimationFrame(gameLoop);
@@ -108,4 +133,5 @@ function gameLoop() {
 
 // Start the game loop
 setInterval(spawnEnemy, 2000);
+setInterval(spawnCoin, 3000);
 gameLoop();
