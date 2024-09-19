@@ -62,6 +62,32 @@ function drawBullets() {
     });
 }
 
+// Draw enemies
+function drawEnemies() {
+    enemies.forEach((enemy, index) => {
+        ctx.fillStyle = 'green';
+        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+        enemy.x -= enemy.speed;  // Move enemy leftward
+
+        // Remove enemy if it goes off-screen and reduce lives
+        if (enemy.x + enemy.width < 0) {
+            enemies.splice(index, 1);
+            lives--;  // Decrease lives if enemy passes the player
+        }
+    });
+}
+
+// Spawning enemies
+function spawnEnemy() {
+    enemies.push({
+        x: canvas.width,
+        y: Math.random() * (canvas.height - 50),
+        width: 50,
+        height: 50,
+        speed: 3
+    });
+}
+
 // Main game loop
 function gameLoop() {
     if (!gameRunning) return;
@@ -72,6 +98,7 @@ function gameLoop() {
     // Draw player
     drawPlayer();
     drawBullets();
+    drawEnemies();
     
     // Add logic to spawn enemies and coins, handle collisions, etc.
 
@@ -80,4 +107,5 @@ function gameLoop() {
 }
 
 // Start the game loop
+setInterval(spawnEnemy, 2000);
 gameLoop();
