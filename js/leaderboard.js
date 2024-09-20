@@ -1,15 +1,18 @@
-// Retrieve the scores from localStorage
-let scores = JSON.parse(localStorage.getItem('scores')) || [];
+window.onload = function() {
+    const leaderboard = document.getElementById('leaderboard');
+    let scores = JSON.parse(localStorage.getItem('scores')) || [];
 
-// Sort scores in descending order
-scores.sort((a, b) => b - a);
+    // Clear the leaderboard content
+    leaderboard.innerHTML = '';
 
-// Select the leaderboard list
-const leaderboardList = document.getElementById('leaderboard-list');
-
-// Display scores on the leaderboard
-scores.forEach((score, index) => {
-    let li = document.createElement('li');
-    li.textContent = `Rank ${index + 1}: ${score}`;
-    leaderboardList.appendChild(li);
-});
+    // Populate the leaderboard
+    if (scores.length > 0) {
+        scores.forEach((entry, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+            leaderboard.appendChild(li);
+        });
+    } else {
+        leaderboard.textContent = 'No scores available.';
+    }
+};

@@ -21,6 +21,7 @@ const player = {
     speed: 8
 };
 
+let playerName = '';
 let enemies = [];
 let coins = [];
 let bullets = [];
@@ -30,6 +31,14 @@ let gameRunning = true;
 let moveUp = false;
 let moveDown = false;
 let isPaused = false;
+
+window.onload = function() {
+    playerName = prompt('Enter your name:');
+    if (!playerName) {
+        playerName = 'Player'; // Fallback name if none provided
+    }
+    localStorage.setItem('playerName', playerName); // Save name in case it's needed later
+};
 
 // Draw player
 function drawPlayer() {
@@ -180,9 +189,15 @@ function checkGameOver() {
     if (lives <= 0) {
         gameRunning = false;
         alert('Game Over! Your score: ' + score);
-        let scores = JSON.parse(localStorage.getItem('scores')) || [];
-        scores.push(score);
-        localStorage.setItem('scores', JSON.stringify(scores));
+
+        if (score > 0) {
+            let scores = JSON.parse(localStorage.getItem('scores')) || [];
+            scores.push({ name: playerName, score: score });
+            scores.sort((a, b) => b.score - a.score); // Sort in descending order
+            scores = scores.slice(0, 10); // Keep only the top 10 scores
+            localStorage.setItem('scores', JSON.stringify(scores));
+        }        
+        
         window.location.reload();
     }
 }
