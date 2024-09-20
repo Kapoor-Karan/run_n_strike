@@ -146,6 +146,14 @@ function checkCollisions() {
     });
 }
 
+// Game over check
+function checkGameOver() {
+    if (lives <= 0) {
+        gameRunning = false;
+        alert('Game Over! Your score: ' + score);
+        window.location.reload();
+    }
+}
 
 // Main game loop
 function gameLoop() {
@@ -160,6 +168,7 @@ function gameLoop() {
     drawEnemies();
     drawCoins();
     checkCollisions();
+    checkGameOver();
 
     // Continue the game loop
     requestAnimationFrame(gameLoop);
