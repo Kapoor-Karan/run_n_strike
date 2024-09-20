@@ -2,14 +2,13 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Game variables
-let player = {
-    x: canvas.width / 2,
-    y: canvas.height - 50,
+// Player object
+const player = {
+    x: 50,
+    y: canvas.height / 2 - 50,
     width: 50,
     height: 50,
-    speed: 20,
-    color: 'blue',
+    speed: 20
 };
 
 let enemies = [];
@@ -21,7 +20,7 @@ let gameRunning = true;
 
 // Function to draw the player
 function drawPlayer() {
-    ctx.fillStyle = player.color;
+    ctx.fillStyle = 'blue';
     ctx.fillRect(player.x, player.y, player.width, player.height);
 }
 
@@ -155,6 +154,25 @@ function checkGameOver() {
     }
 }
 
+// Increase difficulty over time
+let difficulty = 1;
+
+function increaseDifficulty() {
+    difficulty += 0.1;
+    enemies.forEach((enemy) => enemy.speed += 0.1);
+    coins.forEach((coin) => coin.speed += 0.05);
+}
+
+setInterval(increaseDifficulty, 10000);
+
+// Score and Lives display
+function drawScoreAndLives() {
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText('Score: ' + score, 20, 30);
+    ctx.fillText('Lives: ' + lives, 20, 60);
+}
+
 // Main game loop
 function gameLoop() {
     if (!gameRunning) return;
@@ -169,6 +187,7 @@ function gameLoop() {
     drawCoins();
     checkCollisions();
     checkGameOver();
+    drawScoreAndLives();
 
     // Continue the game loop
     requestAnimationFrame(gameLoop);
