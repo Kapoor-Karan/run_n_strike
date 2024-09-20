@@ -27,17 +27,30 @@ let coins = [];
 let bullets = [];
 let lives = 3;
 let score = 0;
-let gameRunning = true;
+let gameRunning = false;  // Game starts only after a valid name is entered
 let moveUp = false;
 let moveDown = false;
 let isPaused = false;
 
-window.onload = function() {
-    playerName = prompt('Enter your name:');
-    if (!playerName) {
-        playerName = 'Player'; // Fallback name if none provided
+// Function to prompt for the player's name and ensure it's valid
+function getPlayerName() {
+    let name = '';
+    while (!name || name.trim() === '') {
+        name = prompt('Enter your name:');
+        if (!name || name.trim() === '') {
+            alert('Please enter a valid name to start the game.');
+        }
     }
-    localStorage.setItem('playerName', playerName); // Save name in case it's needed later
+    return name.trim();
+}
+
+window.onload = function() {
+    playerName = getPlayerName();
+    if (playerName) {
+        localStorage.setItem('playerName', playerName); // Save name if needed later
+        gameRunning = true; // Start the game if a valid name is entered
+        gameLoop();  // Start the game loop
+    }
 };
 
 // Draw player
@@ -76,7 +89,7 @@ document.addEventListener('keyup', (event) => {
 
 // Shooting mechanic
 document.addEventListener('keydown', (event) => {
-    if (event.code === 'Space' && !isPaused) {
+    if (event.code === 'Space' && !isPaused && gameRunning) {
         // Add a bullet when the spacebar is pressed
         bullets.push({
             x: player.x + player.width,  // Start at the right side of the player
@@ -188,17 +201,7 @@ function checkCollisions() {
 function checkGameOver() {
     if (lives <= 0) {
         gameRunning = false;
-        alert('Game Over! Your score: ' + score);
-
-        if (score > 0) {
-            let scores = JSON.parse(localStorage.getItem('scores')) || [];
-            scores.push({ name: playerName, score: score });
-            scores.sort((a, b) => b.score - a.score); // Sort in descending order
-            scores = scores.slice(0, 10); // Keep only the top 10 scores
-            localStorage.setItem('scores', JSON.stringify(scores));
-        }        
-        
-        window.location.reload();
+        displayGameOverScreen();
     }
 }
 
@@ -227,6 +230,62 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+function displayGameOverScreen() {
+    // Clear the canvas and display the Game Over message
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '30px Arial';
+    ctx.fillStyle = 'red';
+    ctx.textAlign = 'center';
+    ctx.fillText('Game Over! Your score: ' + score, canvas.width / 2, canvas.height / 2 - 50);
+
+    // Store the score only if it's above 0
+    if (score > 0) {
+        let scores = JSON.parse(localStorage.getItem('scores')) || [];
+        scores.push({ name: playerName, score: score });
+        
+        // Sort by score in descending order and keep only the top 10
+        scores.sort((a, b) => b.score - a.score);
+        scores = scores.slice(0, 10);
+
+        localStorage.setItem('scores', JSON.stringify(scores));
+    }
+
+    // Create a restart button
+    const restartButton = document.createElement('button');
+    restartButton.textContent = 'Restart Game';
+    restartButton.style.position = 'absolute';
+    restartButton.style.left = '50%';
+    restartButton.style.top = '60%';
+    restartButton.style.transform = 'translate(-50%, -50%)';
+    restartButton.style.padding = '10px 20px';
+    restartButton.style.fontSize = '20px';
+
+    // Append button to the body or a container
+    document.body.appendChild(restartButton);
+
+    // Add an event listener to the button to reload the page and ask for the player's name again
+    restartButton.addEventListener('click', () => {
+        document.body.removeChild(restartButton); // Remove the button from the DOM
+        playerName = getPlayerName();  // Get a new player name
+        if (playerName) {
+            resetGame(); // Reset the game state and start
+        }
+    });
+}
+
+function resetGame() {
+    // Reset all game variables
+    enemies = [];
+    coins = [];
+    bullets = [];
+    lives = 3;
+    score = 0;
+    gameRunning = true; // Start the game
+
+    // Start the game loop again
+    gameLoop();
+}
+
 // Main game loop
 function gameLoop() {
     if (gameRunning) {
@@ -252,7 +311,6 @@ function gameLoop() {
     }
 }
 
-// Start the game loop
+// Start enemy and coin spawning
 setInterval(spawnEnemy, 2000);
 setInterval(spawnCoin, 3000);
-gameLoop();
