@@ -2,7 +2,6 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-
 // Load images for player, enemies, and coins
 const playerImg = new Image();
 playerImg.src = '../assets/player.png';
@@ -30,6 +29,7 @@ let score = 0;
 let gameRunning = true;
 let moveUp = false;
 let moveDown = false;
+let isPaused = false;
 
 // Draw player
 function drawPlayer() {
@@ -38,11 +38,13 @@ function drawPlayer() {
 
 // Update player position based on movement state
 function updatePlayerPosition() {
-    if (moveUp && player.y > 0) {
-        player.y -= player.speed;
-    } 
-    if (moveDown && player.y + player.height < canvas.height) {
-        player.y += player.speed;
+    if (!isPaused) { // Only update position if not paused
+        if (moveUp && player.y > 0) {
+            player.y -= player.speed;
+        } 
+        if (moveDown && player.y + player.height < canvas.height) {
+            player.y += player.speed;
+        }
     }
 }
 
@@ -65,7 +67,7 @@ document.addEventListener('keyup', (event) => {
 
 // Shooting mechanic
 document.addEventListener('keydown', (event) => {
-    if (event.code === 'Space') {
+    if (event.code === 'Space' && !isPaused) {
         // Add a bullet when the spacebar is pressed
         bullets.push({
             x: player.x + player.width,  // Start at the right side of the player
@@ -104,7 +106,6 @@ function drawEnemies() {
         }
     });
 }
-
 
 // Spawning enemies
 function spawnEnemy() {
@@ -199,30 +200,41 @@ setInterval(increaseDifficulty, 10000);
 function drawScoreAndLives() {
     ctx.fillStyle = 'black';
     ctx.font = '20px Arial';
+    ctx.textAlign = 'left';  // Reset text alignment
     ctx.fillText('Score: ' + score, 20, 30);
     ctx.fillText('Lives: ' + lives, 20, 60);
 }
 
+// Pause functionality
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'p' || event.key === 'P') {
+        isPaused = !isPaused;  // Toggle pause
+    }
+});
+
 // Main game loop
 function gameLoop() {
-    if (!gameRunning) return;
-    
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    updatePlayerPosition();
-
-    // Draw player
-    drawPlayer();
-    drawBullets();
-    drawEnemies();
-    drawCoins();
-    checkCollisions();
-    checkGameOver();
-    drawScoreAndLives();
-
-    // Continue the game loop
-    requestAnimationFrame(gameLoop);
+    if (gameRunning) {
+        if (!isPaused) {
+            // Game logic when not paused
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updatePlayerPosition();  // Ensure player movement happens here
+            drawPlayer();
+            drawBullets();
+            drawEnemies();
+            drawCoins();
+            checkCollisions();
+            checkGameOver();
+            drawScoreAndLives();
+        } else {
+            // Draw paused message
+            ctx.font = '30px Arial';
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Paused', canvas.width / 2, canvas.height / 2);
+        }
+        requestAnimationFrame(gameLoop);
+    }
 }
 
 // Start the game loop
