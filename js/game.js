@@ -2,6 +2,17 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+
+// Load images for player, enemies, and coins
+const playerImg = new Image();
+playerImg.src = '../assets/player.png';
+
+const enemyImg = new Image();
+enemyImg.src = '../assets/enemy.png';
+
+const coinImg = new Image();
+coinImg.src = '../assets/coin.png';
+
 // Player object
 const player = {
     x: 50,
@@ -18,10 +29,9 @@ let lives = 3;
 let score = 0;
 let gameRunning = true;
 
-// Function to draw the player
+// Draw player
 function drawPlayer() {
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
 }
 
 // Player movement (up and down)
@@ -64,8 +74,7 @@ function drawBullets() {
 // Draw enemies
 function drawEnemies() {
     enemies.forEach((enemy, index) => {
-        ctx.fillStyle = 'green';
-        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+        ctx.drawImage(enemyImg, enemy.x, enemy.y, enemy.width, enemy.height);
         enemy.x -= enemy.speed;  // Move enemy leftward
 
         // Remove enemy if it goes off-screen and reduce lives
@@ -75,6 +84,7 @@ function drawEnemies() {
         }
     });
 }
+
 
 // Spawning enemies
 function spawnEnemy() {
@@ -90,8 +100,7 @@ function spawnEnemy() {
 // Draw coins
 function drawCoins() {
     coins.forEach((coin, index) => {
-        ctx.fillStyle = 'gold';
-        ctx.fillRect(coin.x, coin.y, coin.width, coin.height);
+        ctx.drawImage(coinImg, coin.x, coin.y, coin.width, coin.height);
         coin.x -= coin.speed;  // Move coin leftward
 
         // Remove coin if it goes off-screen
