@@ -113,6 +113,39 @@ function spawnCoin() {
     });
 }
 
+// Collision detection for enemies and coins
+function checkCollisions() {
+    // Bullets vs Enemies
+    bullets.forEach((bullet, bulletIndex) => {
+        enemies.forEach((enemy, enemyIndex) => {
+            if (bullet.x < enemy.x + enemy.width && bullet.x + bullet.width > enemy.x &&
+                bullet.y < enemy.y + enemy.height && bullet.y + bullet.height > enemy.y) {
+                bullets.splice(bulletIndex, 1);  // Remove bullet
+                enemies.splice(enemyIndex, 1);  // Remove enemy
+                score += 10;
+            }
+        });
+    });
+
+    // Player vs Enemies
+    enemies.forEach((enemy, index) => {
+        if (player.x < enemy.x + enemy.width && player.x + player.width > enemy.x &&
+            player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) {
+            enemies.splice(index, 1);  // Remove enemy
+            lives--;  // Decrease lives
+        }
+    });
+
+    // Player vs Coins
+    coins.forEach((coin, index) => {
+        if (player.x < coin.x + coin.width && player.x + player.width > coin.x &&
+            player.y < coin.y + coin.height && player.y + player.height > coin.y) {
+            coins.splice(index, 1);  // Remove coin
+            score += 5;
+        }
+    });
+}
+
 
 // Main game loop
 function gameLoop() {
@@ -126,6 +159,7 @@ function gameLoop() {
     drawBullets();
     drawEnemies();
     drawCoins();
+    checkCollisions();
 
     // Continue the game loop
     requestAnimationFrame(gameLoop);
