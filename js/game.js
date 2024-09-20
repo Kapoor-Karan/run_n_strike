@@ -19,7 +19,7 @@ const player = {
     y: canvas.height / 2 - 50,
     width: 50,
     height: 50,
-    speed: 20
+    speed: 8
 };
 
 let enemies = [];
@@ -28,18 +28,38 @@ let bullets = [];
 let lives = 3;
 let score = 0;
 let gameRunning = true;
+let moveUp = false;
+let moveDown = false;
 
 // Draw player
 function drawPlayer() {
     ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
 }
 
-// Player movement (up and down)
+// Update player position based on movement state
+function updatePlayerPosition() {
+    if (moveUp && player.y > 0) {
+        player.y -= player.speed;
+    } 
+    if (moveDown && player.y + player.height < canvas.height) {
+        player.y += player.speed;
+    }
+}
+
+// Listen for keydown and keyup events for continuous movement
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowUp' && player.y > 0) {
-        player.y -= player.speed;  // Move up
-    } else if (event.key === 'ArrowDown' && player.y + player.height < canvas.height) {
-        player.y += player.speed;  // Move down
+    if (event.key === 'ArrowUp') {
+        moveUp = true;
+    } else if (event.key === 'ArrowDown') {
+        moveDown = true;
+    }
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'ArrowUp') {
+        moveUp = false;
+    } else if (event.key === 'ArrowDown') {
+        moveDown = false;
     }
 });
 
@@ -93,7 +113,7 @@ function spawnEnemy() {
         y: Math.random() * (canvas.height - 50),
         width: 50,
         height: 50,
-        speed: 3
+        speed: 3 + difficulty
     });
 }
 
@@ -117,7 +137,7 @@ function spawnCoin() {
         y: Math.random() * (canvas.height - 20),
         width: 20,
         height: 20,
-        speed: 2
+        speed: 2 + difficulty
     });
 }
 
@@ -168,8 +188,6 @@ let difficulty = 1;
 
 function increaseDifficulty() {
     difficulty += 0.1;
-    enemies.forEach((enemy) => enemy.speed += 0.1);
-    coins.forEach((coin) => coin.speed += 0.05);
 }
 
 setInterval(increaseDifficulty, 10000);
@@ -189,6 +207,8 @@ function gameLoop() {
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    updatePlayerPosition();
+
     // Draw player
     drawPlayer();
     drawBullets();
