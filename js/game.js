@@ -179,6 +179,9 @@ function checkGameOver() {
     if (lives <= 0) {
         gameRunning = false;
         alert('Game Over! Your score: ' + score);
+        let scores = JSON.parse(localStorage.getItem('scores')) || [];
+        scores.push(score);
+        localStorage.setItem('scores', JSON.stringify(scores));
         window.location.reload();
     }
 }
