@@ -2,15 +2,21 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Load images for player, enemies, and coins
+// Load images for player, enemies, coins, and power-ups
 const playerImg = new Image();
-playerImg.src = '../assets/player.png';
+playerImg.src = './assets/player.png';
 
 const enemyImg = new Image();
-enemyImg.src = '../assets/enemy.png';
+enemyImg.src = './assets/enemy.png';
 
 const coinImg = new Image();
-coinImg.src = '../assets/coin.png';
+coinImg.src = './assets/coin.png';
+
+const invincibilityImg = new Image();
+invincibilityImg.src = './assets/invincibility.png'; // Add your invincibility power-up image
+
+const speedBoostImg = new Image();
+speedBoostImg.src = './assets/speedBoost.png'; // Add your speed boost power-up image
 
 // Player object
 const player = {
@@ -25,12 +31,29 @@ let playerName = '';
 let enemies = [];
 let coins = [];
 let bullets = [];
+let powerUps = [];
 let lives = 3;
 let score = 0;
 let gameRunning = false;  // Game starts only after a valid name is entered
 let moveUp = false;
 let moveDown = false;
 let isPaused = false;
+let enemySpawnInterval = 1500;
+let coinSpawnInterval = 1000;
+let lastEnemySpawnTime = 0;
+let lastCoinSpawnTime = 0;
+
+let isInvincible = false;
+let isSpeedBoosted = false;
+let invincibilityTimer = 0;
+let speedBoostTimer = 0;
+
+const INVINCIBILITY_DURATION = 5000; // 5 seconds
+const SPEED_BOOST_DURATION = 10000; // 10 seconds
+const INVINCIBILITY_RESPAWN_TIME = 60000; // 60 seconds
+const SPEED_BOOST_RESPAWN_TIME = 30000; // 30 seconds
+let lastInvincibilitySpawnTime = 0;
+let lastSpeedBoostSpawnTime = 0;
 
 // Function to prompt for the player's name and ensure it's valid
 function getPlayerName() {
@@ -124,7 +147,9 @@ function drawEnemies() {
         // Remove enemy if it goes off-screen and reduce lives
         if (enemy.x + enemy.width < 0) {
             enemies.splice(index, 1);
-            lives--;  // Decrease lives if enemy passes the player
+            if (!isInvincible) {
+                lives--;  // Decrease lives if enemy passes the player and not invincible
+            }
         }
     });
 }
@@ -164,153 +189,201 @@ function spawnCoin() {
     });
 }
 
-// Collision detection for enemies and coins
+// Spawning Power-Ups
+function spawnPowerUp() {
+    const currentTime = Date.now(); // Get the current time in milliseconds
+
+    // Spawn invincibility power-up if at least 60 seconds have passed since the last spawn
+    if (currentTime - lastInvincibilitySpawnTime >= INVINCIBILITY_RESPAWN_TIME && Math.random() < 0.01) {
+        powerUps.push({
+            type: 'invincibility',
+            x: canvas.width,
+            y: Math.random() * (canvas.height - 20),
+            width: 20,
+            height: 20,
+            speed: 2
+        });
+        lastInvincibilitySpawnTime = currentTime; // Update the last spawn time
+    }
+
+    // Spawn speed boost power-up if at least 30 seconds have passed since the last spawn
+    if (currentTime - lastSpeedBoostSpawnTime >= SPEED_BOOST_RESPAWN_TIME && Math.random() < 0.02) {
+        powerUps.push({
+            type: 'speedBoost',
+            x: canvas.width,
+            y: Math.random() * (canvas.height - 20),
+            width: 20,
+            height: 20,
+            speed: 2
+        });
+        lastSpeedBoostSpawnTime = currentTime; // Update the last spawn time
+    }
+}
+
+// Draw power-ups
+function drawPowerUps() {
+    powerUps.forEach((powerUp, index) => {
+        if (powerUp.type === 'invincibility') {
+            ctx.drawImage(invincibilityImg, powerUp.x, powerUp.y, powerUp.width, powerUp.height);
+        } else if (powerUp.type === 'speedBoost') {
+            ctx.drawImage(speedBoostImg, powerUp.x, powerUp.y, powerUp.width, powerUp.height);
+        }
+        powerUp.x -= powerUp.speed;  // Move power-up leftward
+
+        // Remove power-up if it goes off-screen
+        if (powerUp.x + powerUp.width < 0) {
+            powerUps.splice(index, 1);
+        }
+    });
+}
+
+// Check for power-up collisions
+function checkPowerUpCollisions() {
+    powerUps.forEach((powerUp, index) => {
+        if (player.x < powerUp.x + powerUp.width && player.x + player.width > powerUp.x &&
+            player.y < powerUp.y + powerUp.height && player.y + player.height > powerUp.y) {
+            if (powerUp.type === 'invincibility') {
+                isInvincible = true;
+                invincibilityTimer = INVINCIBILITY_DURATION;
+            } else if (powerUp.type === 'speedBoost') {
+                isSpeedBoosted = true;
+                speedBoostTimer = SPEED_BOOST_DURATION;
+                player.speed *= 2; // Double the player's speed
+            }
+            powerUps.splice(index, 1); // Remove the collected power-up
+        }
+    });
+}
+
+// Update power-up effects
+function updatePowerUpEffects() {
+    if (isInvincible) {
+        invincibilityTimer -= 1000 / 60; // Decrease timer by 1/60th of a second
+        if (invincibilityTimer <= 0) {
+            isInvincible = false; // End invincibility
+        }
+    }
+
+    if (isSpeedBoosted) {
+        speedBoostTimer -= 1000 / 60; // Decrease timer by 1/60th of a second
+        if (speedBoostTimer <= 0) {
+            isSpeedBoosted = false; // End speed boost
+            player.speed /= 2; // Reset the player's speed
+        }
+    }
+}
+
+// Check for collisions between the player and enemies
 function checkCollisions() {
-    // Bullets vs Enemies
-    bullets.forEach((bullet, bulletIndex) => {
-        enemies.forEach((enemy, enemyIndex) => {
+    enemies.forEach((enemy, index) => {
+        if (player.x < enemy.x + enemy.width && player.x + player.width > enemy.x &&
+            player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) {
+            if (!isInvincible) {
+                lives--; // Decrease lives if not invincible
+            }
+            enemies.splice(index, 1); // Remove the enemy after collision
+        }
+    });
+
+    // Check for collisions between bullets and enemies
+    bullets.forEach((bullet, bIndex) => {
+        enemies.forEach((enemy, eIndex) => {
             if (bullet.x < enemy.x + enemy.width && bullet.x + bullet.width > enemy.x &&
                 bullet.y < enemy.y + enemy.height && bullet.y + bullet.height > enemy.y) {
-                bullets.splice(bulletIndex, 1);  // Remove bullet
-                enemies.splice(enemyIndex, 1);  // Remove enemy
-                score += 10;
+                score += 10;  // Increase score when an enemy is hit
+                bullets.splice(bIndex, 1); // Remove the bullet
+                enemies.splice(eIndex, 1); // Remove the enemy
             }
         });
     });
 
-    // Player vs Enemies
-    enemies.forEach((enemy, index) => {
-        if (player.x < enemy.x + enemy.width && player.x + player.width > enemy.x &&
-            player.y < enemy.y + enemy.height && player.y + player.height > enemy.y) {
-            enemies.splice(index, 1);  // Remove enemy
-            lives--;  // Decrease lives
-        }
-    });
-
-    // Player vs Coins
+    // Check for collisions between the player and coins
     coins.forEach((coin, index) => {
         if (player.x < coin.x + coin.width && player.x + player.width > coin.x &&
             player.y < coin.y + coin.height && player.y + player.height > coin.y) {
-            coins.splice(index, 1);  // Remove coin
-            score += 5;
+            score += 5;  // Increase score when a coin is collected
+            coins.splice(index, 1);  // Remove the coin after collection
         }
     });
 }
 
-// Game over check
-function checkGameOver() {
-    if (lives <= 0) {
-        gameRunning = false;
-        displayGameOverScreen();
-    }
+// Draw the current score and remaining lives on the screen
+function drawScoreAndLives() {
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Score: ${score}`, 10, 30);
+    ctx.fillText(`Lives: ${lives}`, 10, 60);
 }
 
 // Increase difficulty over time
-let difficulty = 1;
-
+let difficulty = 0;
 function increaseDifficulty() {
-    difficulty += 0.1;
+    difficulty += 0.005;
 }
 
-setInterval(increaseDifficulty, 10000);
-
-// Score and Lives display
-function drawScoreAndLives() {
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.textAlign = 'left';  // Reset text alignment
-    ctx.fillText('Score: ' + score, 20, 30);
-    ctx.fillText('Lives: ' + lives, 20, 60);
-}
-
-// Pause functionality
+// Pause or resume the game when the 'P' key is pressed
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'p' || event.key === 'P') {
-        isPaused = !isPaused;  // Toggle pause
+    if (event.key === 'p') {
+        isPaused = !isPaused;
     }
 });
 
-function displayGameOverScreen() {
-    // Clear the canvas and display the Game Over message
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.font = '30px Arial';
-    ctx.fillStyle = 'red';
-    ctx.textAlign = 'center';
-    ctx.fillText('Game Over! Your score: ' + score, canvas.width / 2, canvas.height / 2 - 50);
+// Restart the game when the restart button is clicked
+document.getElementById('restartButton').addEventListener('click', () => {
+    location.reload();  // Reload the page to restart the game
+});
 
-    // Store the score only if it's above 0
-    if (score > 0) {
-        let scores = JSON.parse(localStorage.getItem('scores')) || [];
-        scores.push({ name: playerName, score: score });
-        
-        // Sort by score in descending order and keep only the top 10
-        scores.sort((a, b) => b.score - a.score);
-        scores = scores.slice(0, 10);
+// Check if the game is over
+function checkGameOver() {
+    if (lives <= 0) {
+        // Display restart button
+        document.getElementById('restartButton').style.display = 'block';
 
-        localStorage.setItem('scores', JSON.stringify(scores));
-    }
+        // Save score and name if score is greater than 0
+        if (score > 0) {
+            let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            leaderboard.push({ name: playerName, score: score });
 
-    // Create a restart button
-    const restartButton = document.createElement('button');
-    restartButton.textContent = 'Restart Game';
-    restartButton.style.position = 'absolute';
-    restartButton.style.left = '50%';
-    restartButton.style.top = '60%';
-    restartButton.style.transform = 'translate(-50%, -50%)';
-    restartButton.style.padding = '10px 20px';
-    restartButton.style.fontSize = '20px';
+            // Sort the leaderboard by score in descending order
+            leaderboard.sort((a, b) => b.score - a.score);
 
-    // Append button to the body or a container
-    document.body.appendChild(restartButton);
+            // Keep only the top 10 scores
+            if (leaderboard.length > 10) {
+                leaderboard.pop();
+            }
 
-    // Add an event listener to the button to reload the page and ask for the player's name again
-    restartButton.addEventListener('click', () => {
-        document.body.removeChild(restartButton); // Remove the button from the DOM
-        playerName = getPlayerName();  // Get a new player name
-        if (playerName) {
-            resetGame(); // Reset the game state and start
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
         }
-    });
+
+        // End the game
+        gameRunning = false;
+    }
 }
 
-function resetGame() {
-    // Reset all game variables
-    enemies = [];
-    coins = [];
-    bullets = [];
-    lives = 3;
-    score = 0;
-    gameRunning = true; // Start the game
 
-    // Start the game loop again
-    gameLoop();
-}
-
-// Main game loop
+// Game loop
 function gameLoop() {
     if (gameRunning) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawPlayer();
+        updatePlayerPosition();
+        drawEnemies();
+        drawCoins();
+        drawBullets();
+        drawPowerUps();
+        spawnPowerUp();
+        checkCollisions();
+        checkPowerUpCollisions();
+        updatePowerUpEffects();
+        drawScoreAndLives();
+        increaseDifficulty();
+        checkGameOver();
+
         if (!isPaused) {
-            // Game logic when not paused
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updatePlayerPosition();  // Ensure player movement happens here
-            drawPlayer();
-            drawBullets();
-            drawEnemies();
-            drawCoins();
-            checkCollisions();
-            checkGameOver();
-            drawScoreAndLives();
-        } else {
-            // Draw paused message
-            ctx.font = '30px Arial';
-            ctx.fillStyle = 'black';
-            ctx.textAlign = 'center';
-            ctx.fillText('Game Paused', canvas.width / 2, canvas.height / 2);
+            requestAnimationFrame(gameLoop);
         }
-        requestAnimationFrame(gameLoop);
     }
 }
 
-// Start enemy and coin spawning
-setInterval(spawnEnemy, 2000);
-setInterval(spawnCoin, 3000);
