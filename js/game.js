@@ -27,6 +27,7 @@ const player = {
     speed: 8
 };
 
+let gameDuration = null;
 let playerName = '';
 let enemies = [];
 let coins = [];
@@ -70,11 +71,44 @@ function getPlayerName() {
 window.onload = function() {
     playerName = getPlayerName();
     if (playerName) {
-        localStorage.setItem('playerName', playerName); // Save name if needed later
-        gameRunning = true; // Start the game if a valid name is entered
-        gameLoop();  // Start the game loop
+        localStorage.setItem('playerName', playerName);
+
+        // Show the time selection buttons
+        document.getElementById('timeSelection').classList.add('show');
+        
+        // Add event listeners to the buttons
+        document.getElementById('oneMinute').addEventListener('click', () => handleTimeSelection(1 * 60 * 1000));  // 1 minute
+        document.getElementById('fiveMinutes').addEventListener('click', () => handleTimeSelection(5 * 60 * 1000)); // 5 minutes
+        document.getElementById('tenMinutes').addEventListener('click', () => handleTimeSelection(10 * 60 * 1000)); // 10 minutes
+        document.getElementById('infinite').addEventListener('click', () => handleTimeSelection('infinite'));  // Infinite time
     }
+
 };
+
+function handleTimeSelection(duration) {
+    gameDuration = duration;
+    document.getElementById('timeSelection').classList.remove('show');  // Hide time selection buttons
+    gameRunning = true;  // Start the game
+
+    // If a finite duration is selected, set a timeout to end the game
+    if (gameDuration !== 'infinite') {
+        setTimeout(() => {
+            lives = 0;  // End the game by setting lives to 0
+            checkGameOver();
+        }, gameDuration);
+    }
+
+    // Start spawning enemies and coins
+    setInterval(spawnEnemy, 3000);
+    setInterval(spawnCoin, 2000);
+    setInterval(increaseDifficulty, 10000);
+    gameLoop();  // Start the game loop
+}
+
+document.getElementById('restartButton').addEventListener('click', () => {
+    location.reload();  // Reload the page to restart the game
+});
+
 
 // Draw player
 function drawPlayer() {
@@ -326,8 +360,12 @@ function increaseDifficulty() {
 document.addEventListener('keydown', (event) => {
     if (event.key === 'p') {
         isPaused = !isPaused;
+        if (!isPaused && gameRunning) {
+            gameLoop();  // Resume the game loop
+        }
     }
 });
+
 
 // Restart the game when the restart button is clicked
 document.getElementById('restartButton').addEventListener('click', () => {
@@ -362,9 +400,10 @@ function checkGameOver() {
 }
 
 
+
 // Game loop
 function gameLoop() {
-    if (gameRunning) {
+    if (gameRunning && !isPaused) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         drawPlayer();
@@ -378,12 +417,10 @@ function gameLoop() {
         checkPowerUpCollisions();
         updatePowerUpEffects();
         drawScoreAndLives();
-        increaseDifficulty();
         checkGameOver();
 
-        if (!isPaused) {
-            requestAnimationFrame(gameLoop);
-        }
+        requestAnimationFrame(gameLoop);
     }
 }
+
 

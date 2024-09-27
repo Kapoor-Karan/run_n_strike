@@ -1,0 +1,61 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Light background for contrast */
+}
+
+/* Restart Button Styles */
+#restartButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #007bff; /* Slightly lighter blue */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow for depth */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+#restartButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translate(-50%, -50%) scale(1.05); /* Slight scale-up on hover */
+}
+
+/* Time Selection Styles */
+#timeSelection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    gap: 15px; /* Increased gap for better spacing */
+    padding: 20px; /* Padding to prevent content from touching the edges */
+    background-color: #ffffff; /* White background for focus */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Subtle shadow around the container */
+}
+
+#timeSelection button {
+    padding: 12px 25px; /* Slightly larger padding for more clickable area */
+    background-color: #007bff; /* Consistent button color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px; /* Slightly larger font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for buttons */
+}
+
+#timeSelection button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight scale-up on hover */
+}

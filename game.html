@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Run 'n' Strike - Play</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
     <!-- Navbar (Optional for consistency) -->
@@ -20,6 +21,17 @@
     <div class="container">
         <h1>Run 'n' Strike - Game</h1>
         <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <!-- Time Selection Buttons -->
+        <div id="timeSelection">
+            <button id="oneMinute">1 Minute</button>
+            <button id="fiveMinutes">5 Minutes</button>
+            <button id="tenMinutes">10 Minutes</button>
+            <button id="infinite">Infinite</button>
+        </div>
+
+        <!-- Restart Button -->
+        <button id="restartButton">Restart</button>
     </div>
 
     <!-- Link to your game logic script -->
