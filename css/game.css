@@ -4,9 +4,36 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #1c1c1c;
+    color: #f0f0f0;
     height: 100vh;
-    /* Remove display: flex and centering here */
+}
+
+/* Navbar styling */
+nav {
+    background-color: #1f1f1f; /* Darker navbar to match home page */
+    padding: 1rem;
+    width: 100%; /* Ensure navbar spans the full width */
+}
+
+.navbar {
+    list-style: none;
+    display: flex;
+    justify-content: center; /* Center the navbar items */
+}
+
+.navbar li {
+    margin: 0 20px;
+}
+
+.navbar li a {
+    color: #f4f4f4; /* Light text to match home page */
+    text-decoration: none;
+    font-size: 1.5rem; /* Ensure the font size matches home page */
+}
+
+.navbar li a:hover {
+    text-decoration: underline;
 }
 
 /* Restart Button Styles */
@@ -15,7 +42,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #007bff; /* Slightly lighter blue */
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 15px 30px;
@@ -23,13 +50,13 @@ body {
     font-family: Arial, sans-serif;
     border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Increased shadow for depth */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 #restartButton:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    transform: translate(-50%, -50%) scale(1.05); /* Slight scale-up on hover */
+    background-color: #0056b3;
+    transform: translate(-50%, -50%) scale(1.05);
 }
 
 /* Time Selection Styles */
@@ -39,13 +66,14 @@ body {
     justify-content: center;
     align-items: center;
     gap: 15px;
-    background-color: #ffffff;
+    background-color: #2b2b2b;
     padding: 20px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border-radius: 10px;
 }
 
 #timeSelection button {
@@ -57,7 +85,7 @@ body {
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 #timeSelection button:hover {

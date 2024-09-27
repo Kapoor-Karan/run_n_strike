@@ -50,48 +50,49 @@ nav {
     align-items: center;
     flex-grow: 1; /* Make container take up remaining vertical space */
     text-align: center;
+    padding: 20px;
 }
 
 h1 {
-    font-size: 5rem; /* Increased font size */
-    margin-bottom: 30px;
+    font-size: 3rem; /* Reduced font size to fit within smaller screens */
+    margin-bottom: 20px;
 }
 
 p {
-    font-size: 1.8rem; /* Increased font size */
-    margin-bottom: 50px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    max-width: 800px; /* Limit the width of text for readability */
 }
 
 /* Button styling */
-.main-button {
-    padding: 20px 40px; /* Increased padding */
-    font-size: 1.5rem; /* Increased font size */
+button {
+    padding: 12px 25px;
+    font-size: 1.2rem;
     color: #fff;
     background-color: #007bff;
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    margin: 20px;
+    margin-top: 20px;
 }
 
-.main-button:hover {
+button:hover {
     background-color: #0056b3;
-    transform: scale(1.1); /* Slightly increase size on hover */
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
 
     p {
-        font-size: 1.5rem;
+        font-size: 1rem;
     }
 
-    .main-button {
-        font-size: 1.2rem;
-        padding: 15px 30px;
+    button {
+        font-size: 1rem;
+        padding: 10px 20px;
     }
 }

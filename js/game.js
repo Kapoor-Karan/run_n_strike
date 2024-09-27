@@ -361,7 +361,7 @@ function checkCollisions() {
 // Draw the current score and remaining lives on the screen
 function drawScoreAndLives() {
     ctx.font = '20px Arial';
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white'; // Change this to a light color
     ctx.textAlign = 'left';
     ctx.fillText(`Score: ${score}`, 10, 30);
     ctx.fillText(`Lives: ${lives}`, 10, 60);
