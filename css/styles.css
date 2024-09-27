@@ -18,11 +18,15 @@ nav {
     background-color: #333;
     padding: 1rem;
     text-align: center;
+    width: 100%; /* Ensure navbar spans the full width */
+    position: relative; /* Remove any unwanted positioning inheritance */
 }
 
 .navbar {
     list-style: none;
     display: inline-flex;
+    justify-content: center; /* Center the navbar items */
+    width: 100%; /* Ensure navbar spans the full width */
 }
 
 .navbar li {

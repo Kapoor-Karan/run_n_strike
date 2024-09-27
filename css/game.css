@@ -4,7 +4,9 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0; /* Light background for contrast */
+    background-color: #f0f0f0;
+    height: 100vh;
+    /* Remove display: flex and centering here */
 }
 
 /* Restart Button Styles */
@@ -33,29 +35,42 @@ body {
 /* Time Selection Styles */
 #timeSelection {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    gap: 15px; /* Increased gap for better spacing */
-    padding: 20px; /* Padding to prevent content from touching the edges */
-    background-color: #ffffff; /* White background for focus */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Subtle shadow around the container */
+    gap: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #timeSelection button {
-    padding: 12px 25px; /* Slightly larger padding for more clickable area */
-    background-color: #007bff; /* Consistent button color */
+    padding: 12px 25px;
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
-    font-size: 18px; /* Slightly larger font size */
+    font-size: 18px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for buttons */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #timeSelection button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    transform: scale(1.05); /* Slight scale-up on hover */
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+#restartButton,
+#timeSelection {
+    display: none;
+}
+
+/* Centering the time selection buttons */
+#timeSelection.show {
+    display: flex;
 }

@@ -49,6 +49,14 @@ let isSpeedBoosted = false;
 let invincibilityTimer = 0;
 let speedBoostTimer = 0;
 
+const leaderboardKeys = {
+    '60000': 'leaderboard1Minute',
+    '300000': 'leaderboard5Minutes',
+    '600000': 'leaderboard10Minutes',
+    'infinite': 'leaderboardInfinite'
+};
+
+
 const INVINCIBILITY_DURATION = 5000; // 5 seconds
 const SPEED_BOOST_DURATION = 10000; // 10 seconds
 const INVINCIBILITY_RESPAWN_TIME = 60000; // 60 seconds
@@ -69,25 +77,34 @@ function getPlayerName() {
 }
 
 window.onload = function() {
-    playerName = getPlayerName();
-    if (playerName) {
-        localStorage.setItem('playerName', playerName);
-
-        // Show the time selection buttons
-        document.getElementById('timeSelection').classList.add('show');
-        
-        // Add event listeners to the buttons
-        document.getElementById('oneMinute').addEventListener('click', () => handleTimeSelection(1 * 60 * 1000));  // 1 minute
-        document.getElementById('fiveMinutes').addEventListener('click', () => handleTimeSelection(5 * 60 * 1000)); // 5 minutes
-        document.getElementById('tenMinutes').addEventListener('click', () => handleTimeSelection(10 * 60 * 1000)); // 10 minutes
-        document.getElementById('infinite').addEventListener('click', () => handleTimeSelection('infinite'));  // Infinite time
+    function isMobileDevice() {
+        return /Mobi|Android/i.test(navigator.userAgent);
     }
+    // Check if the user is on a mobile device
+    if (isMobileDevice()) {
+        // Show an alert or redirect
+        alert("This game is not supported on mobile devices. Please use a desktop or laptop.");
+        window.location.href = 'index.html'; // Redirect to the home page or another page
+    } else{
+        playerName = getPlayerName();
+        if (playerName) {
+            localStorage.setItem('playerName', playerName);
 
+            // Show the time selection buttons after name input
+            document.getElementById('timeSelection').style.display = 'flex';
+            
+            // Add event listeners to the buttons
+            document.getElementById('oneMinute').addEventListener('click', () => handleTimeSelection(1 * 60 * 1000));  // 1 minute
+            document.getElementById('fiveMinutes').addEventListener('click', () => handleTimeSelection(5 * 60 * 1000)); // 5 minutes
+            document.getElementById('tenMinutes').addEventListener('click', () => handleTimeSelection(10 * 60 * 1000)); // 10 minutes
+            document.getElementById('infinite').addEventListener('click', () => handleTimeSelection('infinite'));  // Infinite time
+        }
+    }
 };
 
 function handleTimeSelection(duration) {
     gameDuration = duration;
-    document.getElementById('timeSelection').classList.remove('show');  // Hide time selection buttons
+    document.getElementById('timeSelection').style.display = 'none';  // Hide time selection buttons after selection
     gameRunning = true;  // Start the game
 
     // If a finite duration is selected, set a timeout to end the game
@@ -372,30 +389,44 @@ document.getElementById('restartButton').addEventListener('click', () => {
     location.reload();  // Reload the page to restart the game
 });
 
+function saveScoreToLeaderboard() {
+    if (score > 0) {
+        let leaderboardKey;
+        if (gameDuration === 'infinite') {
+            leaderboardKey = leaderboardKeys['infinite'];
+        } else {
+            leaderboardKey = leaderboardKeys[gameDuration];
+        }
+
+        let leaderboard = JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+
+        // Add the new score
+        leaderboard.push({ name: playerName, score: score });
+
+        // Sort the leaderboard by score in descending order
+        leaderboard.sort((a, b) => b.score - a.score);
+
+        // Keep only the top 10 scores
+        if (leaderboard.length > 10) {
+            leaderboard = leaderboard.slice(0, 10);
+        }
+
+        // Save the updated leaderboard
+        localStorage.setItem(leaderboardKey, JSON.stringify(leaderboard));
+    }
+}
+
 // Check if the game is over
 function checkGameOver() {
     if (lives <= 0) {
-        // Display restart button
+        gameRunning = false;
+        isPaused = true;
+
+        // Show the restart button when the game is over
         document.getElementById('restartButton').style.display = 'block';
 
-        // Save score and name if score is greater than 0
-        if (score > 0) {
-            let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-            leaderboard.push({ name: playerName, score: score });
-
-            // Sort the leaderboard by score in descending order
-            leaderboard.sort((a, b) => b.score - a.score);
-
-            // Keep only the top 10 scores
-            if (leaderboard.length > 10) {
-                leaderboard.pop();
-            }
-
-            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-        }
-
-        // End the game
-        gameRunning = false;
+        // Save the score and name to the leaderboard
+        saveScoreToLeaderboard();
     }
 }
 
