@@ -8,18 +8,18 @@
 /* Body styling */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #121212; /* Dark theme background */
-    color: #f4f4f4; /* Light text for dark background */
-    height: 100vh; /* Ensure body covers full viewport height */
+    background-color: #121212; 
+    color: #f4f4f4;
+    height: 100vh;
     display: flex;
-    flex-direction: column; /* Align items vertically */
+    flex-direction: column; 
 }
 
 /* Navbar styling */
 nav {
-    background-color: #1f1f1f; /* Darker navbar */
+    background-color: #1f1f1f; 
     padding: 1rem;
-    width: 100%; /* Ensure navbar spans the full width */
+    width: 100%; 
 }
 
 .navbar {
@@ -33,7 +33,7 @@ nav {
 }
 
 .navbar li a {
-    color: #f4f4f4; /* Light text */
+    color: #f4f4f4;
     text-decoration: none;
     font-size: 1.5rem;
 }
@@ -54,20 +54,20 @@ nav {
 }
 
 h1 {
-    font-size: 4rem; /* Increased font size to cover more screen */
+    font-size: 4rem; 
     margin-bottom: 30px;
 }
 
 p {
-    font-size: 1.5rem; /* Increased font size */
+    font-size: 1.5rem; 
     margin-bottom: 30px;
     max-width: 800px; /* Limit the width of text for readability */
 }
 
 /* Button styling */
 button {
-    padding: 15px 30px; /* Increased padding */
-    font-size: 1.5rem; /* Increased font size */
+    padding: 15px 30px;
+    font-size: 1.5rem;
     color: #fff;
     background-color: #007bff;
     border: none;

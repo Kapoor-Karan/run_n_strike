@@ -35,7 +35,7 @@ let bullets = [];
 let powerUps = [];
 let lives = 3;
 let score = 0;
-let gameRunning = false;  // Game starts only after a valid name is entered
+let gameRunning = false;
 let moveUp = false;
 let moveDown = false;
 let isPaused = false;
@@ -121,7 +121,7 @@ function handleTimeSelection(duration) {
         }, gameDuration);
     }
 
-    // Start spawning enemies and coins
+    // Start spawning enemies and coins and increasing difficulty over time
     setInterval(spawnEnemy, 3000);
     setInterval(spawnCoin, 2000);
     setInterval(increaseDifficulty, 10000);
@@ -172,8 +172,8 @@ document.addEventListener('keydown', (event) => {
     if (event.code === 'Space' && !isPaused && gameRunning) {
         // Add a bullet when the spacebar is pressed
         bullets.push({
-            x: player.x + player.width,  // Start at the right side of the player
-            y: player.y + player.height / 2 - 2,  // Centered vertically
+            x: player.x + player.width, 
+            y: player.y + player.height / 2 - 2, 
             width: 10,
             height: 5,
             speed: 8
@@ -184,7 +184,7 @@ document.addEventListener('keydown', (event) => {
 // Draw bullets
 function drawBullets() {
     bullets.forEach((bullet, index) => {
-        bullet.x += bullet.speed;  // Move bullet to the right
+        bullet.x += bullet.speed;
         ctx.fillStyle = 'red';
         ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
 
@@ -199,7 +199,7 @@ function drawBullets() {
 function drawEnemies() {
     enemies.forEach((enemy, index) => {
         ctx.drawImage(enemyImg, enemy.x, enemy.y, enemy.width, enemy.height);
-        enemy.x -= enemy.speed;  // Move enemy leftward
+        enemy.x -= enemy.speed; 
 
         // Remove enemy if it goes off-screen and reduce lives
         if (enemy.x + enemy.width < 0) {
@@ -226,7 +226,7 @@ function spawnEnemy() {
 function drawCoins() {
     coins.forEach((coin, index) => {
         ctx.drawImage(coinImg, coin.x, coin.y, coin.width, coin.height);
-        coin.x -= coin.speed;  // Move coin leftward
+        coin.x -= coin.speed;
 
         // Remove coin if it goes off-screen
         if (coin.x + coin.width < 0) {
@@ -285,7 +285,7 @@ function drawPowerUps() {
         } else if (powerUp.type === 'speedBoost') {
             ctx.drawImage(speedBoostImg, powerUp.x, powerUp.y, powerUp.width, powerUp.height);
         }
-        powerUp.x -= powerUp.speed;  // Move power-up leftward
+        powerUp.x -= powerUp.speed;
 
         // Remove power-up if it goes off-screen
         if (powerUp.x + powerUp.width < 0) {
