@@ -4,22 +4,22 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
-    background-color: #1c1c1c;
+    background-color: #121212;
     color: #f0f0f0;
     height: 100vh;
 }
 
 /* Navbar styling */
 nav {
-    background-color: #1f1f1f; /* Darker navbar to match home page */
+    background-color: #1f1f1f;
     padding: 1rem;
-    width: 100%; /* Ensure navbar spans the full width */
+    width: 100%;
 }
 
 .navbar {
     list-style: none;
     display: flex;
-    justify-content: center; /* Center the navbar items */
+    justify-content: center;
 }
 
 .navbar li {
@@ -27,9 +27,9 @@ nav {
 }
 
 .navbar li a {
-    color: #f4f4f4; /* Light text to match home page */
+    color: #f4f4f4;
     text-decoration: none;
-    font-size: 1.5rem; /* Ensure the font size matches home page */
+    font-size: 1.5rem;
 }
 
 .navbar li a:hover {
@@ -47,7 +47,6 @@ nav {
     border: none;
     padding: 15px 30px;
     font-size: 20px;
-    font-family: Arial, sans-serif;
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -98,7 +97,138 @@ nav {
     display: none;
 }
 
-/* Centering the time selection buttons */
 #timeSelection.show {
     display: flex;
+}
+
+/* Instruction Screen Styles */
+#instructionScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #1f1f1f;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    margin-top: 20px;
+    width: 80%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#instructionScreen h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #f0f0f0;
+}
+
+#instructionScreen p {
+    font-size: 1.2rem;
+    margin: 5px 0;
+    text-align: center;
+}
+
+#instructionScreen ul {
+    list-style: none;
+    padding: 0;
+}
+
+#instructionScreen li {
+    font-size: 1rem;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+#instructionScreen li img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+#instructionScreen button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#instructionScreen button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    #instructionScreen {
+        width: 90%;
+    }
+
+    #instructionScreen h2 {
+        font-size: 1.5rem;
+    }
+
+    #instructionScreen p,
+    #instructionScreen li {
+        font-size: 1rem;
+    }
+
+    #instructionScreen li img {
+        width: 25px;
+        height: 25px;
+    }
+
+    #instructionScreen button {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+
+    #timeSelection button {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    #restartButton {
+        padding: 12px 24px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    #instructionScreen h2 {
+        font-size: 1.2rem;
+    }
+
+    #instructionScreen p,
+    #instructionScreen li {
+        font-size: 0.9rem;
+    }
+
+    #instructionScreen li img {
+        width: 20px;
+        height: 20px;
+    }
+
+    #instructionScreen button {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    #timeSelection button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    #restartButton {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
 }

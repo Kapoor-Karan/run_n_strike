@@ -80,31 +80,37 @@ window.onload = function() {
     function isMobileDevice() {
         return /Mobi|Android/i.test(navigator.userAgent);
     }
-    // Check if the user is on a mobile device
-    if (isMobileDevice()) {
-        // Show an alert or redirect
-        alert("This game is not supported on mobile devices. Please use a desktop or laptop.");
-        window.location.href = 'index.html'; // Redirect to the home page or another page
-    } else{
-        playerName = getPlayerName();
-        if (playerName) {
-            localStorage.setItem('playerName', playerName);
 
-            // Show the time selection buttons after name input
-            document.getElementById('timeSelection').style.display = 'flex';
-            
-            // Add event listeners to the buttons
-            document.getElementById('oneMinute').addEventListener('click', () => handleTimeSelection(1 * 60 * 1000));  // 1 minute
-            document.getElementById('fiveMinutes').addEventListener('click', () => handleTimeSelection(5 * 60 * 1000)); // 5 minutes
-            document.getElementById('tenMinutes').addEventListener('click', () => handleTimeSelection(10 * 60 * 1000)); // 10 minutes
-            document.getElementById('infinite').addEventListener('click', () => handleTimeSelection('infinite'));  // Infinite time
-        }
+    if (isMobileDevice()) {
+        alert("This game is not supported on mobile devices. Please use a desktop or laptop.");
+        window.location.href = 'index.html';
+    } else {
+        // Show pre-game screen
+        document.getElementById('instructionScreen').style.display = 'block';
+        
+        // Add event listener to the "Continue" button
+        document.getElementById('continueButton').addEventListener('click', function() {
+            document.getElementById('instructionScreen').style.display = 'none'; // Hide pre-game screen
+            playerName = getPlayerName();
+            if (playerName) {
+                localStorage.setItem('playerName', playerName);
+                document.getElementById('timeSelection').style.display = 'flex'; // Show time selection buttons
+                addTimeSelectionListeners();
+            }
+        });
     }
 };
 
+function addTimeSelectionListeners() {
+    document.getElementById('oneMinute').addEventListener('click', () => handleTimeSelection(1 * 60 * 1000));  // 1 minute
+    document.getElementById('fiveMinutes').addEventListener('click', () => handleTimeSelection(5 * 60 * 1000)); // 5 minutes
+    document.getElementById('tenMinutes').addEventListener('click', () => handleTimeSelection(10 * 60 * 1000)); // 10 minutes
+    document.getElementById('infinite').addEventListener('click', () => handleTimeSelection('infinite'));  // Infinite time
+}
+
 function handleTimeSelection(duration) {
     gameDuration = duration;
-    document.getElementById('timeSelection').style.display = 'none';  // Hide time selection buttons after selection
+    document.getElementById('timeSelection').style.display = 'none';  // Hide time selection buttons
     gameRunning = true;  // Start the game
 
     // If a finite duration is selected, set a timeout to end the game

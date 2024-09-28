@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
-    <!-- Navbar (Optional for consistency) -->
     <nav>
         <ul class="navbar">
             <li><a href="index.html">Home</a></li>
+            <li><a href="game.html">Play Game</a></li>
             <li><a href="leaderboard.html">Leaderboard</a></li>
             <li><a href="about.html">About</a></li>
         </ul>
@@ -20,10 +20,31 @@
     <!-- Game Section -->
     <div class="container">
         <h1>Run 'n' Strike - Game</h1>
+
+        <!-- Pre-Game Instructions Screen -->
+        <div id="instructionScreen" class="show">
+            <h2>Controls and Instructions</h2>
+            <p><strong>Move Up:</strong> Arrow Up Key</p>
+            <p><strong>Move Down:</strong> Arrow Down Key</p>
+            <p><strong>Shoot:</strong> Spacebar</p>
+            <p><strong>P:</strong> Pause/Resume Game </p>
+            <p><strong>Power-Ups:</strong></p>
+            <ul>
+                <li><img src="./assets/invincibility.png" alt="Invincibility Power-Up"> Invincibility (lasts 5 seconds)</li>
+                <li><img src="./assets/speedBoost.png" alt="Speed Boost Power-Up"> Speed Boost (lasts 10 seconds)</li>
+            </ul>
+            <p><strong>Points System:</strong></p>
+            <ul>
+                <li><img src="./assets/enemy.png" alt="Enemy">Defeat Enemies: 10 points</li>
+                <li><img src="./assets/coin.png" alt="Coin">Collect Coins: 5 points</li>
+            </ul>
+            <button id="continueButton">Continue</button>
+        </div>
+
         <canvas id="gameCanvas" width="800" height="600"></canvas>
-        
+
         <!-- Time Selection Buttons -->
-        <div id="timeSelection" class="show">
+        <div id="timeSelection" class="hide">
             <button id="oneMinute">1 Minute</button>
             <button id="fiveMinutes">5 Minutes</button>
             <button id="tenMinutes">10 Minutes</button>
@@ -34,7 +55,6 @@
         <button id="restartButton">Restart</button>
     </div>
 
-    <!-- Link to your game logic script -->
     <script src="js/game.js"></script>
 </body>
 </html>
