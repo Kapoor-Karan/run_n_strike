@@ -49,6 +49,9 @@ let isSpeedBoosted = false;
 let invincibilityTimer = 0;
 let speedBoostTimer = 0;
 
+let startTime;
+let elapsedTime;
+
 const leaderboardKeys = {
     '60000': 'leaderboard1Minute',
     '300000': 'leaderboard5Minutes',
@@ -120,12 +123,18 @@ function handleTimeSelection(duration) {
             checkGameOver();
         }, gameDuration);
     }
-
+    
+    startTime = Date.now();
+    
     // Start spawning enemies and coins and increasing difficulty over time
     setInterval(spawnEnemy, 3000);
     setInterval(spawnCoin, 2000);
     setInterval(increaseDifficulty, 10000);
     gameLoop();  // Start the game loop
+}
+
+function updateTimer() {
+    elapsedTime = Math.floor((Date.now() - startTime) / 1000); // Calculate elapsed time in seconds
 }
 
 document.getElementById('restartButton').addEventListener('click', () => {
@@ -436,13 +445,19 @@ function checkGameOver() {
     }
 }
 
-
+function drawTimer() {
+    ctx.font = "20px Arial"; // Set font size and style
+    ctx.fillStyle = "white"; // Set text color
+    ctx.textAlign = "right"; // Align text to the right
+    ctx.fillText(`Time: ${elapsedTime}s`, canvas.width - 10, 30); // Draw the timer
+}
 
 // Game loop
 function gameLoop() {
     if (gameRunning && !isPaused) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        updateTimer()
         drawPlayer();
         updatePlayerPosition();
         drawEnemies();
@@ -455,6 +470,7 @@ function gameLoop() {
         updatePowerUpEffects();
         drawScoreAndLives();
         checkGameOver();
+        drawTimer();
 
         requestAnimationFrame(gameLoop);
     }
